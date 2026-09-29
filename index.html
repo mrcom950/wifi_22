@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dsr WiFi - Customer App & Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="loading-overlay" id="loading-overlay">লোড হচ্ছে...</div>
+
+    <div class="container">
+
+        <!-- LOGIN SCREEN -->
+        <div id="login-screen">
+            <div class="login-card">
+                <div class="brand-logo">📶</div>
+                <h2>Dsr WiFi Customer</h2>
+                <p>আপনার একাউন্টে লগইন করুন</p>
+
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>মোবাইল নম্বর</label>
+                        <input type="tel" id="login-phone" placeholder="017XXXXXXXX" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>পাসওয়ার্ড</label>
+                        <input type="password" id="login-pass" placeholder="••••••••" required>
+                    </div>
+
+                    <p class="error-text" id="login-error"></p>
+
+                    <button type="submit" class="btn-primary">লগইন করুন</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MAIN APP DASHBOARD -->
+        <div id="app-screen">
+
+            <div class="header">
+                <h3>প্রিয় কাস্টমার, <strong id="user-display-name">গ্রাহক</strong></h3>
+                <h1>Dsr WiFi Connection</h1>
+            </div>
+
+            <div class="content-body">
+
+                <!-- HOME TAB -->
+                <div id="home-tab" class="tab-content active">
+
+                    <div class="isp-card">
+                        <div class="isp-card-title">🌐 আপনার ব্রডব্যান্ড ব্রাউজিং তথ্য</div>
+                        <div class="isp-row">
+                            <strong>আপনার ISP:</strong>
+                            <span>Dsr WiFi</span>
+                        </div>
+                        <div class="isp-row">
+                            <strong>User Name:</strong>
+                            <span id="dash-username">-</span>
+                        </div>
+                        <div class="isp-row">
+                            <strong>Password:</strong>
+                            <span id="dash-password">-</span>
+                        </div>
+                    </div>
+
+                    <div class="notice-card">
+                        <h4>⚠️ জরুরি নোটিশ</h4>
+                        <p>প্রতি মাসের ১-৩ তারিখের মধ্যে বিল পরিশোধ না করলে স্বয়ংক্রিয়ভাবে লাইন বিচ্ছিন্ন হয়ে যাবে। অনুগ্রহ করে নির্ধারিত সময়ে বিল পরিশোধ করুন।</p>
+                    </div>
+
+                    <div class="action-grid">
+                        <div class="action-btn" onclick="openPaymentModal()">
+                            <div class="icon">💳</div>
+                            <span>১. পেমেন্ট করুন</span>
+                        </div>
+                        <div class="action-btn" onclick="scrollToHistory()">
+                            <div class="icon">📜</div>
+                            <span>২. সকল বিল হিসাব</span>
+                        </div>
+                    </div>
+
+                    <div class="section-title" id="history-section">সাল ২০২৬ - বিলের হিসাব</div>
+                    <div class="bill-history">
+                        <div class="bill-item">
+                            <div class="bill-info">
+                                <div class="month">জানুয়ারি — ৫০০৳</div>
+                                <div class="time">সময়: ৩:৩০ PM</div>
+                            </div>
+                            <span class="status-badge status-done">Done</span>
+                        </div>
+
+                        <div class="bill-item">
+                            <div class="bill-info">
+                                <div class="month">ফেব্রুয়ারি — ৫০০৳</div>
+                                <div class="time">সময়: ৯:০২ AM</div>
+                            </div>
+                            <span class="status-badge status-done">Done</span>
+                        </div>
+
+                        <div class="bill-item">
+                            <div class="bill-info">
+                                <div class="month">মার্চ — ৫০০৳</div>
+                                <div class="time">বকেয়া বিল (১ নাম্বার বাটনে দিন)</div>
+                            </div>
+                            <span class="status-badge status-unpaid">Unpaid</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MESSAGE TAB -->
+                <div id="message-tab" class="tab-content">
+                    <div class="section-title">মেসেজ ও ইনবক্স</div>
+
+                    <div class="card-box" style="border-left: 4px solid #16a34a;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <p style="font-weight: 700; color: #16a34a; font-size: 14px;">✅ বিল পরিশোধ সফল</p>
+                            <span style="font-size: 11px; color: #94a3b8;">আজ ৩:৩০ PM</span>
+                        </div>
+                        <p style="font-size: 13.5px; color: #334155; line-height: 1.5;">
+                            প্রিয় <span class="profile-name-text">গ্রাহক</span>, আপনার ফেব্রুয়ারি ২০২৬ মাসের বিল ৫০০৳ সফলভাবে জমা হয়েছে। Dsr WiFi-এর সাথে থাকার জন্য ধন্যবাদ!
+                        </p>
+                    </div>
+
+                    <div class="card-box" style="border-left: 4px solid #ef4444;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <p style="font-weight: 700; color: #dc2626; font-size: 14px;">⚠️ বিল পরিশোধের রিমাইন্ডার</p>
+                            <span style="font-size: 11px; color: #94a3b8;">১ মার্চ</span>
+                        </div>
+                        <p style="font-size: 13.5px; color: #334155; line-height: 1.5;">
+                            সম্মানিত গ্রাহক, সংযোগটি নিরবচ্ছিন্ন রাখতে আগামী ৩ মার্চ ২০২৬-এর মধ্যে চলতি মাসের বিল পরিশোধ করুন।
+                        </p>
+                    </div>
+
+                    <div class="isp-credentials-box">
+                        <span class="isp-credentials-title">🔑 আপনার ISP ইউজার নাম ও পাসওয়ার্ড</span>
+                        <div class="profile-row">
+                            <strong>User Name:</strong>
+                            <span id="msg-username">-</span>
+                        </div>
+                        <div class="profile-row">
+                            <strong>Password:</strong>
+                            <span id="msg-password">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROFILE TAB -->
+                <div id="profile-tab" class="tab-content">
+                    <div class="section-title">আমার প্রোফাইল</div>
+                    <div class="card-box">
+                        <div class="profile-row">
+                            <strong>নাম:</strong>
+                            <span class="profile-name-text">-</span>
+                        </div>
+                        <div class="profile-row">
+                            <strong>মোবাইল নম্বর:</strong>
+                            <span id="profile-phone">-</span>
+                        </div>
+                        <div class="profile-row">
+                            <strong>প্যাকেজ:</strong>
+                            <span id="profile-package">-</span>
+                        </div>
+                        <div class="profile-row">
+                            <strong>সংযোগের স্ট্যাটাস:</strong>
+                            <span style="color: #16a34a; font-weight: 700;">Active</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" style="background: #dc2626;" onclick="logout()">লগআউট করুন</button>
+                </div>
+
+            </div>
+
+            <!-- BOTTOM NAV -->
+            <div class="bottom-nav">
+                <div class="nav-item active" onclick="switchTab('home-tab', this)">
+                    <span class="nav-icon">🏠</span>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('message-tab', this)">
+                    <span class="nav-icon">💬</span>
+                    <span>Message</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('profile-tab', this)">
+                    <span class="nav-icon">👤</span>
+                    <span>Profile</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PAYMENT MODAL -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePaymentModal()">&times;</span>
+            <h3 style="font-size: 18px; color: #0f172a;">বিল পরিশোধ করুন</h3>
+
+            <form onsubmit="handlePaymentSubmit(event)">
+                <div class="form-group" style="margin-top: 15px;">
+                    <label style="color: #475569;">বকেয়া মাস</label>
+                    <select id="payment-month" style="background: #fff; color: #0f172a; border-color: #cbd5e1;">
+                        <option value="March 2026">মার্চ ২০২৬ — বিল ৫০০ টাকা</option>
+                    </select>
+                </div>
+
+                <div class="bkash-box">
+                    <p>বিকাশ পার্সোনাল (Send Money)</p>
+                    <h3>০০০০০২৬২৯২৯০</h3>
+                </div>
+
+                <div class="form-group">
+                    <label style="color: #475569;">Transaction ID (TrxID)</label>
+                    <input type="text" id="payment-trxid" placeholder="যেমন: 8N7A6D5E" required style="background: #fff; color: #0f172a; border-color: #cbd5e1;">
+                </div>
+                <button type="submit" class="btn-primary">Submit করুন</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dsr WiFi - Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+    <div class="loading-overlay" id="loading-overlay">লোড হচ্ছে...</div>
+
+    <div class="container">
+        <div class="admin-header">
+            <h2>Dsr WiFi Admin Panel</h2>
+            <p style="font-size: 12px; opacity: 0.8; margin-top: 4px;">অটো বিলিং ও কাস্টমার ম্যানেজমেন্ট</p>
+        </div>
+
+        <div class="auto-notice">
+            ⚡ <strong>অটো সিস্টেম অন:</strong> প্রতি মাসের ৩ তারিখের মধ্যে বিল না দিলে লাইন স্বয়ংক্রিয়ভাবে অফ হয়ে যাবে।
+        </div>
+
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchAdminTab('tab-billing', this)">📊 বিল হিসাব</button>
+            <button class="tab-btn" onclick="switchAdminTab('tab-customers', this)">👥 কাস্টমার লিস্ট</button>
+            <button class="tab-btn" onclick="switchAdminTab('tab-add-customer', this)">➕ নতুন এড করুন</button>
+        </div>
+
+        <!-- TAB 1: Billing -->
+        <div class="card active" id="tab-billing">
+            <div class="card-title">
+                <span>💳 বিল কালেকশন ইতিহাস</span>
+                <span class="month-badge" id="current-month-display">মাস: লোড হচ্ছে...</span>
+            </div>
+
+            <div class="summary-box">
+                <span>মোট জমা:</span>
+                <span id="total-amount-display">০ টাকা</span>
+            </div>
+
+            <form onsubmit="addPaymentRecord(event)" style="margin-bottom: 20px; background: #f8fafc; padding: 12px; border-radius: 10px;">
+                <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">নতুন পেমেন্ট অ্যান্ট্রি করুন:</div>
+                <div class="form-grid">
+                    <div class="form-group"><input type="date" id="pay-date" required></div>
+                    <div class="form-group">
+                        <select id="pay-customer-select" required>
+                            <option value="">কাস্টমার সিলেক্ট করুন</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><input type="number" id="pay-amount" placeholder="পরিমাণ (টাকা)" required></div>
+                    <button type="submit" class="btn-submit" style="margin-top: 0; padding: 10px;">Done করুন</button>
+                </div>
+            </form>
+
+            <table class="bill-table">
+                <thead>
+                    <tr>
+                        <th>তারিখ</th>
+                        <th>নাম</th>
+                        <th>পরিমাণ</th>
+                        <th>স্ট্যাটাস</th>
+                    </tr>
+                </thead>
+                <tbody id="bill-table-body"></tbody>
+            </table>
+        </div>
+
+        <!-- TAB 2: Customers List -->
+        <div class="card" id="tab-customers">
+            <div class="card-title">
+                <span>📋 সকল কাস্টমার ও ডকুমেন্টস</span>
+            </div>
+            <div id="all-customers-container"></div>
+        </div>
+
+        <!-- TAB 3: Add Customer -->
+        <div class="card" id="tab-add-customer">
+            <div class="card-title">
+                <span>➕ নতুন কাস্টমার ও ডকুমেন্ট যুক্ত করুন</span>
+            </div>
+
+            <form onsubmit="handleAddCustomer(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>ISP Name</label>
+                        <input type="text" id="cust-isp" value="Dsr WiFi" placeholder="যেমন: Dsr WiFi" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>কাস্টমারের নাম</label>
+                        <input type="text" id="cust-name" placeholder="যেমন: সাব্বির হোসেন" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ISP User Name</label>
+                        <input type="text" id="cust-username" placeholder="sabbir_user" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ISP Password</label>
+                        <input type="text" id="cust-pass" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>মোবাইল নম্বর (App Login ID)</label>
+                        <input type="tel" id="cust-mobile" placeholder="017XXXXXXXX" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>App লগইন পাসওয়ার্ড</label>
+                        <input type="text" id="cust-login-pass" placeholder="কাস্টমার এই পাসওয়ার্ড দিয়ে অ্যাপে লগইন করবে" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>এনআইডি (NID) নম্বর</label>
+                        <input type="text" id="cust-nid" placeholder="NID Number" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>প্যাকেজ ও বিল</label>
+                        <select id="cust-package">
+                            <option value="5 Mbps (500৳)">5 Mbps — ৫০০ টাকা/মাস</option>
+                            <option value="10 Mbps (800৳)">10 Mbps — ৮০০ টাকা/মাস</option>
+                            <option value="15 Mbps (1000৳)">15 Mbps — ১০০০ টাকা/মাস</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">কাস্টমার রেজিস্টার করুন</button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
